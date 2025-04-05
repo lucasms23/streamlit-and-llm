@@ -6,11 +6,18 @@ st.title("LLM Expert App 🤖")
 user_input = st.text_area("Digite seu prompt")
 
 if st.button("Enviar"):
-    with st.spinner("Consultando modelo..."):
-        response = requests.post("http://backend:5000/generate", json={"text": user_input})
-        if response.status_code == 200:
-            st.markdown("### Resposta:")
-            st.write(response.json()["response"])
-        else:
-            st.error("Erro no backend. Status: " + str(response.status_code))
-            st.text(response.text)
+    if not user_input.strip():
+        st.warning("Por favor, digite um prompt antes de enviar.")
+    else:
+        with st.spinner("Consultando modelo..."):
+            try:
+                response = requests.post("http://backend:5000/generate", json={"text": user_input})
+                if response.status_code == 200:
+                    st.markdown("### Resposta:")
+                    st.write(response.json().get("response", "Resposta vazia."))
+                else:
+                    st.error(f"Erro no backend. Status: {response.status_code}")
+                    st.text(f"Detalhes do erro: {response.text}")
+            except requests.exceptions.RequestException as e:
+                st.error("Erro de conexão com o backend.")
+                st.text(str(e))

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from pydantic import BaseModel
 import subprocess
 
@@ -9,8 +9,19 @@ class Prompt(BaseModel):
 
 @app.post("/generate")
 def generate(prompt: Prompt):
-    result = subprocess.run(
-        ['/app/llama.cpp/build/bin/llama', '-m', './models/mistral-7b-instruct-v0.1.Q4_K_M.gguf', '-p', prompt.text, '-n', '128'],
-        capture_output=True, text=True
-    )
-    return {"response": result.stdout}
+    try:
+        result = subprocess.run(
+            [
+                '/app/llama.cpp/build/bin/llama-cli',
+                '-m', '/app/models/mistral-7b-instruct-v0.1.Q4_K_M.gguf',
+                '-p', prompt.text,
+                '-n', '128'
+            ],
+            capture_output=True, text=True, check=True
+        )
+        return {"response": result.stdout}
+    except subprocess.CalledProcessError as e:
+        print("Erro ao rodar o modelo:")
+        print("stdout:", e.stdout)
+        print("stderr:", e.stderr)
+        return {"error": "Erro ao executar o modelo", "details": e.stderr}

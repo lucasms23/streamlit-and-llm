@@ -16,7 +16,6 @@ RUN git clone https://github.com/ggerganov/llama.cpp.git /app/llama.cpp && \
     cmake .. && \
     make
 
-
 # Copia o código da API
 COPY server.py .
 COPY run_model.sh .
