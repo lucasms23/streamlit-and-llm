@@ -28,7 +28,12 @@ llm-app/
 │   ├── Dockerfile
 │   ├── run_model.sh
 │   ├── server.py  <-- API que carrega o modelo e responde
+│   ├── rag.py
+│   ├── utils.py
+│   ├── docs/      <-- arquivos .pdf
+│   ├── embeddings/
 │   └── models/    <-- modelo .gguf
+
 
 ## Rodando localmente
 
@@ -47,3 +52,7 @@ docker compose up --build
 4) Acesse:
 
 Frontend (Streamlit): http://localhost:8501
+
+## Exemplo de uso
+
+![alt text](llm-app/others/image.png)
